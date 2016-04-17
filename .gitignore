@@ -45,3 +45,15 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+.classpath
+bin/SpaceInvaders.class
+*.prefs
+.project
+bin/button/AButton.class
+bin/entity/Missile.class
+bin/shapes/Rectangle.class
+bin/button/RegularButton.class
+bin/shapes/AShape.class
+bin/CloseWindow.class
+bin/entity/Entity.class
+bin/entity/Ship.class
