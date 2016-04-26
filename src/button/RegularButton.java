@@ -4,7 +4,7 @@ import java.awt.*;
 
 /**
  *  The <code>RegularButton</code> class can be used to create interactive buttons
- *  of rectangular shape.
+ *  of a rectangular shape.
  */
 public class RegularButton extends AButton {
 	
@@ -15,12 +15,12 @@ public class RegularButton extends AButton {
 	
 	/**
 	 * This constructor lets the parent class set the attributes, except the shape
-	 * @param someLabel button label
-	 * @param someColor button's color
-	 * @param someX upper left x coordinate
-	 * @param someY upper left y coordinate
-	 * @param someWidth button width
-	 * @param someHeight button height
+	 * @param someLabel the button label
+	 * @param someColor the button color
+	 * @param someX the x location
+	 * @param someY the y location
+	 * @param someWidth the width of a button
+	 * @param someHeight the height of a button
 	 */
 	public RegularButton(String someLabel,
 				   Color someColor,
@@ -35,7 +35,7 @@ public class RegularButton extends AButton {
 	}
 	
 	/**
-	 * A regular button is a plain old rectangle.
+	 * A regular button is rectangle
 	 */
 	public void setShape(){
 		shape = new Rectangle(x, y, width, height);

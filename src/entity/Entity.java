@@ -5,29 +5,30 @@ import java.awt.Shape;
 import shapes.AShape;
 
 /**
- *  The <code>Entity</code> class is used to draw the Entity suite on a card.
+ *  The <code>Entity</code> class is used to create objects with different
+ *  shapes that can move, detect collisions with other objects, and be destroyed.
  *  
  *  @Author Michael Twardowski
  */
 public abstract class Entity extends AShape{
 	
 	/**
-	 * The shape of AShape
+	 * The shape of <code>Entity</code>.
 	 */
 	protected Shape shape;
 	
 	/**
-	 * Is the entity alive
+	 * Is the <code>Entity</code> alive
 	 */
 	protected boolean alive;
 	
 	/**
-	 * Number of lives the entity has 
+	 * Number of lives an <code>Entity</code>.
 	 */
 	protected int lives;
 	
 	/**
-	 * Default Constructor
+	 * Default Constructor for <code>Entity</code>.
 	 */
 	public Entity(){
 		super();
@@ -36,11 +37,11 @@ public abstract class Entity extends AShape{
 	}
 	
 	/**
-	 * Sets all of the properties
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
+	 * Sets all of the properties of <code>Entity</code>.
+	 * @param x the x location
+	 * @param y the y location
+	 * @param width of the <code>Entity</code>
+	 * @param height of the <code>Entity</code>
 	 */
 	public Entity(int x, int y ,int width, int height){
 		super(x, y, width, height);
@@ -49,26 +50,18 @@ public abstract class Entity extends AShape{
 	}
 	
 	/**
-	 * Moves the entity
-	 */
-	public void move(int x, int y){
-		this.x = x;
-		this.y = y;
-	}
-	
-	/**
-	 * Checks to see if the entity is alive.
+	 * Checks to see if the <code>Entity</code> is alive.
 	 */
 	public boolean isAlive(){
 		return alive;
 	}
 	
 	/**
-	 * Sets the location and dimensions
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
+	 * Sets all of the properties of <code>Entity</code>.
+	 * @param x the x location
+	 * @param y the y location
+	 * @param width of the <code>Entity</code>
+	 * @param height of the <code>Entity</code>
 	 */
 	@Override
 	public void setup(int x, int y, int width, int height){
@@ -78,26 +71,31 @@ public abstract class Entity extends AShape{
 	
 	/**
 	 * True if the point whose x and y are given is within the button
-	 * @param pointX
-	 * @param pointY
+	 * @param x point to check
+	 * @param y point to check
 	 * @return
 	 */
-	public boolean isInside(int pointX, int pointY){
-		return shape.contains(pointX,pointY);
+	public boolean isInside(int x, int y){
+		return shape.contains(x, y);
 	}
 	
 	/**
-	 * Sets the Entity's shape
+	 * Sets the <code>Entity</code>'s shape
 	 */
 	public abstract void setShape();
 	
 	/**
-	 * Destroys the entity
+	 * Moves the <code>Entity</code>.
+	 */
+	public abstract void move();
+	
+	/**
+	 * Destroys the <code>Entity</code>.
 	 */
 	public abstract void destroy();
 	
 	/**
-	 * Draws an entity;
+	 * Draws an <code>Entity</code>.
 	 */
 	@Override
 	public abstract void paint(Graphics pane);

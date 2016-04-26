@@ -11,25 +11,25 @@ import java.awt.Graphics;
 public class Rectangle extends AShape{
 	
 	/**
-	 * Default Constructor.
+	 * Default Constructor for a <code>Rectangle</code>.
 	 */
 	public Rectangle(){
 		super();
 	}//end default constructor
 	
 	/**
-	 * Sets all of the properties
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
+	 * Sets all of the properties of a <code>Rectangle</code>.
+	 * @param x location
+	 * @param y location
+	 * @param width of the rectangle
+	 * @param height of the rectangle
 	 */
 	public Rectangle(int x, int y, int width, int height){
 		super(x, y, width, height);
 	}
 	
 	/**
-	 * draws a rectangle, filled with the given color
+	 * Paints a a <code>Rectangle</code>., filled with the given color
 	 * @param pane
 	 */
 	@Override

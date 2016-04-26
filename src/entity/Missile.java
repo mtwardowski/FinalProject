@@ -2,15 +2,51 @@ package entity;
 
 import java.awt.Graphics;
 
+
+/**
+ *  The <code>Missile</code> class is fired from a <code>Ship</code> or 
+ *  <code>AlienShipe</code> with a set speed and direction. A <code>Missle</code>
+ *  destroys any <code>Ship</code> or <code>AlienShip</code> it collides with.
+ *  A <code>Missile</code> will also destruct if it collides with a game window
+ *  border.
+ *  
+ *  @Author Michael Twardowski
+ */
 public class Missile extends Entity {
 	
+	/**
+	 * Tells the direction in which the missile is fired.
+	 * If true, the missile is fired up.
+	 */
+	private boolean isMissileRising;
 	
+	/**
+	 * Missile Dimensions
+	 */
+	private int width,
+				height;
+	
+	
+	/**
+	 * Default Constructor for <code>Missile</code>.
+	 */
 	public Missile() {
 		// TODO Auto-generated constructor stub
 	}
-
-	public Missile(int x, int y, int width, int height) {
-		super(x, y, width, height);
+	
+	/**
+	 * Sets all of the properties of <code>Missile</code>.
+	 * @param x the x location
+	 * @param y the y location
+	 * @param width of the <code>Missile</code>
+	 * @param height of the <code>Missile</code>
+	 * @param isUp the direction of the missile. (Up if true)
+	 */
+	public Missile(int x, int y, boolean isUp) {
+		super(x, y, 5, 15);
+		width = 5;
+		height = 15;
+		isMissileRising = isUp;
 	}
 
 	/**
@@ -21,6 +57,13 @@ public class Missile extends Entity {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Moves the <code>Missle</code> along its trajectory until a collision occurs.
+	 */
+	public void move(){
+	
+	}
+	
 	/**
 	 * Destroys the entity
 	 */
@@ -33,7 +76,6 @@ public class Missile extends Entity {
 	 */
 	@Override
 	public void paint(Graphics pane) {
-		// TODO Auto-generated method stub
+		pane.fillRect(x, y, width, height);
 	}
-	
 }

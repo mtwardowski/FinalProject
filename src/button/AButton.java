@@ -1,10 +1,10 @@
-
 package button;
+
 import java.awt.*;
 
 /**
- *  The <code>AButton</code> abstract class can be used to create interactive buttons
- *  of any shape.
+ *  The <code>AButton</code> abstract class can be used to create interactive 
+ *  buttons of any shape.
  */
 public abstract class AButton {
 	
@@ -19,7 +19,7 @@ public abstract class AButton {
 	protected boolean up;
 	
 	/**
-	 * What it says in the center of the button
+	 * Text Label for the button
 	 */
 	protected String label;
 	
@@ -38,12 +38,21 @@ public abstract class AButton {
 	 * Default constructor sets button up with arbitrary values
 	 */
 	public AButton(){
-		this("?????",						//		with a questionable label,
+		this("?????",							//		with a questionable label,
 				 Color.black,					//		in plain black
 				 43, 47,						//		at an arbitrary location,
 				 145, 145);						//		and with an arbitrary size,
 	}
 	
+	/**
+	 * Constructor to setup a button.
+	 * @param someLabel the button label
+	 * @param someColor the button color
+	 * @param someX the x location
+	 * @param someY the y location
+	 * @param someWidth the width of a button
+	 * @param someHeight the height of a button
+	 */
 	public AButton(String someLabel,
 	   Color someColor,
 	   int someX, int someY,
@@ -51,18 +60,18 @@ public abstract class AButton {
 		//	We create a button
 		setup(someLabel,					//		with a given label,
 				someColor,					//		in a given color
-				someX, someY,					//		at a given location,
+				someX, someY,				//		at a given location,
 				someWidth, someHeight);		//		and with a given size,
 	}
 	
 	/**
 	 * Sets up all of the button's attributes
-	 * @param someLabel
-	 * @param someColor
-	 * @param someX
-	 * @param someY
-	 * @param someWidth
-	 * @param someHeight
+	 * @param someLabel the button label
+	 * @param someColor the button color
+	 * @param someX the x location
+	 * @param someY the y location
+	 * @param someWidth the width of a button
+	 * @param someHeight the height of a button
 	 */
 	public void setup(String someLabel,
 			  Color someColor,
@@ -85,8 +94,8 @@ public abstract class AButton {
 	 * @param pointY
 	 * @return
 	 */
-	public boolean isInside(int pointX, int pointY){
-		return shape.contains(pointX,pointY);
+	public boolean isInside(int x, int y){
+		return shape.contains(x, y);
 	}
 
 	/**
