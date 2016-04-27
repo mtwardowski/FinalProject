@@ -80,6 +80,11 @@ public abstract class Entity extends AShape{
 	}
 	
 	/**
+	 * The entity fires an object
+	 */
+	public abstract Entity fire();
+	
+	/**
 	 * Sets the <code>Entity</code>'s shape
 	 */
 	public abstract void setShape();

@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 /**
 *  The <code>Ship</code> class is used to create game objects that can move, 
@@ -14,12 +15,7 @@ public class Ship extends Entity {
 	 * All <code>Missile</code>s that have been fired by a <code>Ship</code>
 	 * but not yet destroyed.
 	 */
-	protected Missile missilesFired[] = new Missile[100];
-	
-	/**
-	 * 
-	 */
-	protected int missileCount = 0;
+	protected ArrayList missilesFired = new ArrayList();
 	
 	/**
 	 * Determines how often a <code>Ship</code> could fire a <code>Missile</code>
@@ -53,10 +49,11 @@ public class Ship extends Entity {
 	/**
 	 * Fires a <code>Missile</code> from the <code>Ship</code> in the upward direction
 	 */
-	public void fire() {
-			System.out.println("Fire!");
-		 missilesFired[missileCount] = new Missile(x + width/2, y - height, true);
-		 missileCount++;
+	public Missile fire() {
+		System.out.println("Fire!");
+		int speed = -10; 
+		Missile missile = new Missile(x + width/2, y - height, speed);
+		return missile;
 	}
 	
 	/**
@@ -83,10 +80,9 @@ public class Ship extends Entity {
 	}
 	
 	/**
-	 * Moves the <code>Ship</code> along its trajectory.
+	 * Moves the <code>Ship</code>'s missiles along its trajectory.
 	 */
 	public void move(){
-	
 	}
 	
 	/**
@@ -134,8 +130,9 @@ public class Ship extends Entity {
 	public void paint(Graphics pane) {
 		pane.setColor(color.BLUE);
 		pane.fillRect(x, y, width, height);
-		for(int i = 0; i < missileCount; i++){
-			missilesFired[i].paint(pane);
+		for (int i = 0; i < missilesFired.size(); i++ ){
+			Missile missile = (Missile) missilesFired.get(i);
+			missile.paint(pane);
 		}
 	}
 	

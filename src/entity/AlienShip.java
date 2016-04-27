@@ -13,7 +13,8 @@ public class AlienShip extends Ship {
 	/**
 	 * Multiply's the speed of the <code>AlienShip</code>s as more are destroyed
 	 */
-	private static int speedMultiplier;
+	private static int speedMultiplier,
+					   speed = 0;
 	
 	/**
 	 * Default constructor for a <code>AlienShip</code>
@@ -48,9 +49,9 @@ public class AlienShip extends Ship {
 	 * downward direction
 	 */
 	@Override
-	public void fire() {
+	public Missile fire() {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	/**
@@ -66,8 +67,8 @@ public class AlienShip extends Ship {
 	@Override
 	public void move(){
 		int rowHeight = 1;
-		this.x = this.x*speedMultiplier;
-		this.y = this.y - rowHeight;
+		x =  x + speed*speedMultiplier;
+		//this.y = this.y - rowHeight;
 	}
 	
 	/**

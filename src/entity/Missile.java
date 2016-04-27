@@ -26,6 +26,10 @@ public class Missile extends Entity {
 	private int width,
 				height;
 	
+	/**
+	 * Missile Speed, negative speed is traveling up, positive is down
+	 */
+	private int speed;
 	
 	/**
 	 * Default Constructor for <code>Missile</code>.
@@ -42,11 +46,11 @@ public class Missile extends Entity {
 	 * @param height of the <code>Missile</code>
 	 * @param isUp the direction of the missile. (Up if true)
 	 */
-	public Missile(int x, int y, boolean isUp) {
+	public Missile(int x, int y, int speed) {
 		super(x, y, 5, 15);
 		width = 5;
 		height = 15;
-		isMissileRising = isUp;
+		this.speed = speed;
 	}
 
 	/**
@@ -61,7 +65,7 @@ public class Missile extends Entity {
 	 * Moves the <code>Missle</code> along its trajectory until a collision occurs.
 	 */
 	public void move(){
-	
+		y = y + speed;
 	}
 	
 	/**
@@ -76,6 +80,15 @@ public class Missile extends Entity {
 	 */
 	@Override
 	public void paint(Graphics pane) {
+		pane.setColor(color.blue);
 		pane.fillRect(x, y, width, height);
 	}
+	
+	/**
+	 * Fire does nothing, returns null
+	 */
+	public Entity fire(){
+		return null;
+	}
+	
 }
