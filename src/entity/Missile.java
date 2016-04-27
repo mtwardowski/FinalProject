@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 
 /**
@@ -58,7 +59,7 @@ public class Missile extends Entity {
 	 */
 	@Override
 	public void setShape() {
-		// TODO Auto-generated method stub
+		shape = new Rectangle(x, y, width, height);
 	}
 
 	/**

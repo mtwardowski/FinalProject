@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 /**
 *  The <code>AlienShip</code> class is used to create objects that move,
@@ -13,15 +14,14 @@ public class AlienShip extends Ship {
 	/**
 	 * Multiply's the speed of the <code>AlienShip</code>s as more are destroyed
 	 */
-	private static int speedMultiplier,
-					   speed = 0;
+	private static int speedMultiplier = 1,
+					   speed = 15;
 	
 	/**
 	 * Default constructor for a <code>AlienShip</code>
 	 */
 	public AlienShip() {
 		// TODO Auto-generated constructor stub
-		speedMultiplier = 1;
 	}
 	
 	/**
@@ -33,7 +33,6 @@ public class AlienShip extends Ship {
 	 */
 	public AlienShip(int x, int y, int width, int height) {
 		super(x, y, width, height);
-		speedMultiplier = 1;
 	}
 	
 	/**
@@ -41,7 +40,20 @@ public class AlienShip extends Ship {
 	 */
 	public static void increaseSpeed() {
 		// TODO Auto-generated method stub
-
+	}
+	
+	/**
+	 * Returns the speed of all Alien Ships
+	 */
+	public static int getSpeed() {
+		return speed;
+	}
+	
+	/**
+	 * Change Direction of all Alien Ships
+	 */
+	public static void changeDirection() {
+		speed = -speed;
 	}
 	
 	/**
@@ -66,9 +78,17 @@ public class AlienShip extends Ship {
 	 */
 	@Override
 	public void move(){
-		int rowHeight = 1;
 		x =  x + speed*speedMultiplier;
-		//this.y = this.y - rowHeight;
+		setShape();
+	}
+	
+	/**
+	 * Moves the <code>AlienShip</code> along its trajectory
+	 */
+	public void moveDown(){
+		int rowHeight = 1;
+		y = y + rowHeight;
+		move();
 	}
 	
 	/**
@@ -78,6 +98,14 @@ public class AlienShip extends Ship {
 	public void paint(Graphics pane) {
 		pane.setColor(color.black);
 		pane.fillRect(x, y, width, height);
+	}
+	
+	/**
+	 * Sets the shape of the <code>AlienShip</code>.
+	 */
+	@Override
+	public void setShape() {
+		shape = new Rectangle(x, y, width, height);
 	}
 	
 }

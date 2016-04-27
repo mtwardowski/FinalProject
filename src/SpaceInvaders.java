@@ -67,6 +67,12 @@ AlarmListener{
 	private ArrayList entities = new ArrayList();
 	
 	/**
+	 * ArrayList to keep track of any <code>Entity</code> that is to be destroy
+	 * when the next frame is painted.
+	 */
+	private ArrayList entitiesToBeDestroyed = new ArrayList();
+	
+	/**
 	 * <code>Ship</code> for the user to control
 	 */
 	private Entity defender;
@@ -223,18 +229,35 @@ AlarmListener{
 			//First, paint the balloon
 			paintFrame();
 			
-			/*this both moves the balloon and checks to see if it's out of
-			//the frame
-			if(!balloon.move(speed)){
-			*/
-			
+			boolean directionChange = false;
+			int speed = AlienShip.getSpeed();
 			// moves all entities that haven't been destroyed
 			for (int i = 0; i < entities.size(); i++ ){
 					Entity entity = (Entity) entities.get(i);
+					Rectangle rect = entity.getShape().getBounds();
+					
+					if((rect.x + speed <= 0 | (rect.x + rect.width + speed> windowWidth))
+						& !directionChange){
+						AlienShip.changeDirection();
+						directionChange = true;
+					}
 					entity.move();
 			}
-				//nextTime = true;//if it's out of the frame, the next time we reset
-			//}
+			
+			// moves all entities that haven't been destroyed
+			for (int i = 0; i < entities.size(); i++ ){
+				Entity entity = (Entity) entities.get(i);
+				for(int j = i + 1; j < entities.size(); j++){
+					Entity entityOther = (Entity) entities.get(j);
+					if(entity.isInside(entityOther)){
+						entitiesToBeDestroyed.add(entity);
+						entitiesToBeDestroyed.add(entityOther);
+					}
+				} 
+			}
+			//removes entities to be destroyed and clears entitiesToBeDestroyed 
+			entities.removeAll(entitiesToBeDestroyed);
+			entitiesToBeDestroyed.clear();
 			
 		}
 		//stop the animation
@@ -351,7 +374,9 @@ AlarmListener{
 		int pressed = key.getKeyCode();
 		if(pressed == key.VK_SPACE){
 			Entity missile = defender.fire();
-			entities.add(missile);
+			if(missile != null){
+				entities.add(missile);
+			}
 		}else if ((pressed == key.VK_LEFT) |(pressed == key.VK_A)){
 			System.out.println("Left");
 		}else if ((pressed == key.VK_RIGHT)|(pressed == key.VK_D)){

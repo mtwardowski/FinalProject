@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 /**
@@ -10,12 +11,6 @@ import java.util.ArrayList;
 *  <code>AlienShip</code>s.
 */ 
 public class Ship extends Entity {
-	
-	/**
-	 * All <code>Missile</code>s that have been fired by a <code>Ship</code>
-	 * but not yet destroyed.
-	 */
-	protected ArrayList missilesFired = new ArrayList();
 	
 	/**
 	 * Determines how often a <code>Ship</code> could fire a <code>Missile</code>
@@ -44,16 +39,23 @@ public class Ship extends Entity {
 	 */
 	public Ship(int x, int y, int width, int height) {
 		super(x, y, width, height);
+		fireRate = 300;
 	}
 
 	/**
 	 * Fires a <code>Missile</code> from the <code>Ship</code> in the upward direction
 	 */
 	public Missile fire() {
-		System.out.println("Fire!");
-		int speed = -10; 
-		Missile missile = new Missile(x + width/2, y - height, speed);
-		return missile;
+	
+		// check that we have waiting long enough to fire
+		if (System.currentTimeMillis() - lastShotTime > fireRate) {
+			lastShotTime = System.currentTimeMillis();
+			int speed = -15; 
+			Missile missile = new Missile(x + width/2, y - height, speed);
+			return missile;
+		}else{
+			return null;
+		}
 	}
 	
 	/**
@@ -61,8 +63,7 @@ public class Ship extends Entity {
 	 */
 	@Override
 	public void setShape() {
-		// TODO Auto-generated method stub
-
+		shape = new Rectangle(x, y, width, height);
 	}
 	
 	/**
@@ -130,10 +131,6 @@ public class Ship extends Entity {
 	public void paint(Graphics pane) {
 		pane.setColor(color.BLUE);
 		pane.fillRect(x, y, width, height);
-		for (int i = 0; i < missilesFired.size(); i++ ){
-			Missile missile = (Missile) missilesFired.get(i);
-			missile.paint(pane);
-		}
 	}
 	
 }
