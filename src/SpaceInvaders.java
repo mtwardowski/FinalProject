@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 
@@ -65,17 +67,19 @@ AlarmListener{
 	 * Array to keep track of everything that isn't destroyed
 	 */
 	private ArrayList entities = new ArrayList();
+	private ArrayList missiles = new ArrayList();
 	
 	/**
 	 * ArrayList to keep track of any <code>Entity</code> that is to be destroy
 	 * when the next frame is painted.
 	 */
 	private ArrayList entitiesToBeDestroyed = new ArrayList();
+	private ArrayList missilesToBeDestroyed = new ArrayList();
 	
 	/**
 	 * <code>Ship</code> for the user to control
 	 */
-	private Entity defender;
+	private Ship defender;
 	
 	/**
 	 * Number of <code>alienShips</code> that are alive
@@ -97,7 +101,13 @@ AlarmListener{
 	/**
 	 * Keeps track of the game score
 	 */
-	private int gameScore = 0;
+	private int gameScore;
+	
+	/**
+	 * gameScore Location
+	 */
+	private int gameScoreX,
+				gameScoreY;
 
 	/**
 	 * The default constructor for the <code>SpaceInvaders</code>. 
@@ -107,8 +117,7 @@ AlarmListener{
 		final int 	BUTTON_WIDTH = 100, // defines size of buttons
 					BUTTON_HEIGHT = 40,
 					BUTTON_X = 50,  // locate of first button
-					BUTTON_Y = 50,
-					SPACE = 10;  // space between buttons
+					BUTTON_Y = 50;
 		
 		//Creates a Frame that will hold the game canvas
 		Frame window =  new Frame("Space Invaders");
@@ -138,10 +147,16 @@ AlarmListener{
 		window.setVisible(true);
 		
 		/*
-		 * Sets up two buttons to control the game
+		 * Sets up a button to control the game
 		 */
 		button = new RegularButton("Start New Game", Color.red, BUTTON_X, BUTTON_Y, 
 				BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		/*
+		 * Sets up label location
+		 */
+		gameScoreX = windowWidth - 150;
+		gameScoreY = 75;
 		
 		myWindow = new CloseWindow(); // allows for window closing
 		window.addWindowListener(myWindow);
@@ -213,6 +228,19 @@ AlarmListener{
 				entity.paint(pane);
 		}
 		
+		// paints all missiles that haven't been destroyed
+		for (int i = 0; i < missiles.size(); i++ ){
+				Entity missile = (Entity) missiles.get(i);
+				missile.paint(pane);
+		}
+		
+		Graphics2D pane2 = (Graphics2D)pane;
+		pane2.setColor(Color.black);
+		Font currentFont = pane2.getFont();
+		Font newFont = currentFont.deriveFont(currentFont.getSize() * 3F);
+		pane2.setFont(newFont);
+		pane2.drawString("" + gameScore, gameScoreX, gameScoreY);
+		
 		//Necessary commands for displaying what you've painted
 		pane.dispose();	//you don't need the Graphics any more
 		buffer.show();	//what you've drawn is in the buffer
@@ -231,8 +259,10 @@ AlarmListener{
 			
 			boolean directionChange = false;
 			int speed = AlienShip.getSpeed();
-			// moves all entities that haven't been destroyed
-			for (int i = 0; i < entities.size(); i++ ){
+			
+			if(speed < 0){
+				// moves all entities that haven't been destroyed
+				for (int i = 0; i < entities.size(); i++ ){
 					Entity entity = (Entity) entities.get(i);
 					Rectangle rect = entity.getShape().getBounds();
 					
@@ -242,23 +272,46 @@ AlarmListener{
 						directionChange = true;
 					}
 					entity.move();
+				}
+			}else{
+				// moves all entities that haven't been destroyed
+				for (int i = entities.size() -1; i > -1; i-- ){
+					Entity entity = (Entity) entities.get(i);
+					Rectangle rect = entity.getShape().getBounds();
+					
+					if((rect.x + speed <= 0 | (rect.x + rect.width + speed> windowWidth))
+						& !directionChange){
+						AlienShip.changeDirection();
+						directionChange = true;
+					}
+					entity.move();
+				}
+			}
+			
+			// moves all missiles
+			for (int i = 0; i < missiles.size(); i++ ){
+				Entity missile = (Entity) missiles.get(i);
+				missile.move();
 			}
 			
 			// moves all entities that haven't been destroyed
-			for (int i = 0; i < entities.size(); i++ ){
-				Entity entity = (Entity) entities.get(i);
-				for(int j = i + 1; j < entities.size(); j++){
-					Entity entityOther = (Entity) entities.get(j);
-					if(entity.isInside(entityOther)){
-						entitiesToBeDestroyed.add(entity);
-						entitiesToBeDestroyed.add(entityOther);
+			for (int i = 0; i < missiles.size(); i++ ){
+				Entity missile = (Entity) missiles.get(i);
+				for(int j = 0 ; j < entities.size(); j++){
+					Entity ship = (Entity) entities.get(j);
+					if(ship.isInside(missile)){
+						entitiesToBeDestroyed.add(ship);
+						missilesToBeDestroyed.add(missile);
+						gameScore = gameScore + 100;
 					}
 				} 
 			}
+			
 			//removes entities to be destroyed and clears entitiesToBeDestroyed 
 			entities.removeAll(entitiesToBeDestroyed);
+			missiles.removeAll(missilesToBeDestroyed);
 			entitiesToBeDestroyed.clear();
-			
+			missilesToBeDestroyed.clear();
 		}
 		//stop the animation
 		else if(nextTime){
@@ -276,9 +329,12 @@ AlarmListener{
 	private void startNewGame(){
 		
 		entities.clear();
+		missiles.clear();
+		alienShipCount = 0;
+		gameScore = 0;
 		
 		//Our heroic defending ship
-		defender = new Ship(375, 725, 50, 25);
+		defender = new Ship((windowWidth - 50)/2, 725, 50, 25);
 		entities.add(defender);
 		
 		/*
@@ -287,9 +343,10 @@ AlarmListener{
 		
 		int rowsOfShips = 5,
 			columnsOfShips = 12,
-			initialX = 100,
+			initialX = windowWidth/columnsOfShips,
 			initialY = 150,
-			spacing = 50;
+			spacingX = 100,
+			spacingY = spacingX/2;
 		
 		//TODO: remove later
 		int alienWidth = 25,
@@ -298,13 +355,12 @@ AlarmListener{
 		//alienShips = new AlienShip[rowsOfShips][columnsOfShips];
 		for(int i = 0; i < rowsOfShips; i++){
 			for(int j = 0; j < columnsOfShips; j++){
-				Entity alienShip = new AlienShip(initialX + spacing*j, 
-								initialY + spacing*i , alienWidth, alienHeight);
+				Entity alienShip = new AlienShip(initialX + spacingX*j, 
+								initialY + spacingY*i , alienWidth, alienHeight);
 				entities.add(alienShip);
 				alienShipCount++;
 			}
 		}
-		
 		isGameRunning = true;
 	}
 	
@@ -375,12 +431,20 @@ AlarmListener{
 		if(pressed == key.VK_SPACE){
 			Entity missile = defender.fire();
 			if(missile != null){
-				entities.add(missile);
+				missiles.add(missile);
 			}
 		}else if ((pressed == key.VK_LEFT) |(pressed == key.VK_A)){
-			System.out.println("Left");
+			int speed = defender.getSpeed();
+			Rectangle ship = defender.getShape().getBounds();
+			if(ship.x - speed > 0 ){
+				defender.moveLeft();
+			}
 		}else if ((pressed == key.VK_RIGHT)|(pressed == key.VK_D)){
-			System.out.println("Right");
+			int speed = defender.getSpeed();
+			Rectangle ship = defender.getShape().getBounds();
+			if(ship.x + ship.width + speed < windowWidth ){
+				defender.moveRight();
+			}
 		}
 	}
 	

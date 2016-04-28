@@ -90,7 +90,7 @@ public class Alarm extends Thread
 	*/
 	public void run()
 	{
-		System.out.println("The alarm is now running.");
+		System.out.println("The game is now running.");
 		setPeriodicBeep(delay);
 	}
 

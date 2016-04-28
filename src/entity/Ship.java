@@ -13,15 +13,10 @@ import java.util.ArrayList;
 public class Ship extends Entity {
 	
 	/**
-	 * Determines how often a <code>Ship</code> could fire a <code>Missile</code>
-	 */
-	protected static final int MAX_FIRE_RATE = 1;
-	
-	/**
 	 * The speed of the <code>Ship</code> is the number of pixels
 	 * it moves each time <code>move</code> is called.
 	 */
-	protected static final int SPEED = 1;
+	protected static final int SPEED = 20;
 		
 	/**
 	 * Default constructor for a <code>Ship</code>
@@ -50,7 +45,7 @@ public class Ship extends Entity {
 		// check that we have waiting long enough to fire
 		if (System.currentTimeMillis() - lastShotTime > fireRate) {
 			lastShotTime = System.currentTimeMillis();
-			int speed = -15; 
+			int speed = -25; 
 			Missile missile = new Missile(x + width/2, y - height, speed);
 			return missile;
 		}else{
@@ -70,14 +65,16 @@ public class Ship extends Entity {
 	 * Moves the <code>Ship</code> left.
 	 */
 	public void moveLeft(){
-		
+		x = x - SPEED;
+		setShape();
 	}
 	
 	/**
 	 * Moves the <code>Ship</code> right.
 	 */
 	public void moveRight(){
-		
+		x = x + SPEED;
+		setShape();
 	}
 	
 	/**
@@ -122,6 +119,13 @@ public class Ship extends Entity {
 	public void gainALife(){
 		int life = 1;
 		setLives(lives + life);
+	}
+	
+	/**
+	 * Returns the speed of all Alien Ships
+	 */
+	public static int getSpeed() {
+		return SPEED;
 	}
 	
 	/**

@@ -15,7 +15,7 @@ public class AlienShip extends Ship {
 	 * Multiply's the speed of the <code>AlienShip</code>s as more are destroyed
 	 */
 	private static int speedMultiplier = 1,
-					   speed = 15;
+					   speed = 5;
 	
 	/**
 	 * Default constructor for a <code>AlienShip</code>
@@ -45,6 +45,7 @@ public class AlienShip extends Ship {
 	/**
 	 * Returns the speed of all Alien Ships
 	 */
+
 	public static int getSpeed() {
 		return speed;
 	}
