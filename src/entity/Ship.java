@@ -16,7 +16,7 @@ public class Ship extends Entity {
 	 * The speed of the <code>Ship</code> is the number of pixels
 	 * it moves each time <code>move</code> is called.
 	 */
-	protected static final int SPEED = 20;
+	protected static final int SPEED = 25;
 		
 	/**
 	 * Default constructor for a <code>Ship</code>
@@ -45,8 +45,8 @@ public class Ship extends Entity {
 		// check that we have waiting long enough to fire
 		if (System.currentTimeMillis() - lastShotTime > fireRate) {
 			lastShotTime = System.currentTimeMillis();
-			int speed = -25; 
-			Missile missile = new Missile(x + width/2, y - height, speed);
+			int speed = -15; 
+			Missile missile = new Missile(x + width/2, y, speed);
 			return missile;
 		}else{
 			return null;

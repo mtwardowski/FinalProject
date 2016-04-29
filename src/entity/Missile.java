@@ -50,7 +50,7 @@ public class Missile extends Entity {
 	public Missile(int x, int y, int speed) {
 		super(x, y, 5, 15);
 		width = 5;
-		height = 15;
+		height = 25;
 		this.speed = speed;
 	}
 

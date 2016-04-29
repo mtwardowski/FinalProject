@@ -67,14 +67,16 @@ AlarmListener{
 	 * Array to keep track of everything that isn't destroyed
 	 */
 	private ArrayList entities = new ArrayList();
-	private ArrayList missiles = new ArrayList();
+	private ArrayList defenderMissiles = new ArrayList();
+	private ArrayList alienMissiles = new ArrayList();
 	
 	/**
 	 * ArrayList to keep track of any <code>Entity</code> that is to be destroy
 	 * when the next frame is painted.
 	 */
 	private ArrayList entitiesToBeDestroyed = new ArrayList();
-	private ArrayList missilesToBeDestroyed = new ArrayList();
+	private ArrayList defenderMissilesToBeDestroyed = new ArrayList();
+	private ArrayList alienMissilesToBeDestroyed = new ArrayList();
 	
 	/**
 	 * <code>Ship</code> for the user to control
@@ -108,6 +110,11 @@ AlarmListener{
 	 */
 	private int gameScoreX,
 				gameScoreY;
+	
+	/**
+	 * Did you win the game?
+	 */
+	private boolean winCondition = false;
 
 	/**
 	 * The default constructor for the <code>SpaceInvaders</code>. 
@@ -166,7 +173,7 @@ AlarmListener{
 
 		//To make the balloon rise (or fall)
 		timer = new Alarm(this);
-		timer.setPeriod(50);//20 frames per second
+		timer.setPeriod(16);//60 frames per second
 		timer.start();
 				
 		/* // the following two lines do the magic of key binding. the first line
@@ -229,8 +236,8 @@ AlarmListener{
 		}
 		
 		// paints all missiles that haven't been destroyed
-		for (int i = 0; i < missiles.size(); i++ ){
-				Entity missile = (Entity) missiles.get(i);
+		for (int i = 0; i < defenderMissiles.size(); i++ ){
+				Entity missile = (Entity) defenderMissiles.get(i);
 				missile.paint(pane);
 		}
 		
@@ -258,6 +265,7 @@ AlarmListener{
 			paintFrame();
 			
 			boolean directionChange = false;
+			AlienShip.setVerticalMovement(false);
 			int speed = AlienShip.getSpeed();
 			
 			if(speed < 0){
@@ -270,6 +278,7 @@ AlarmListener{
 						& !directionChange){
 						AlienShip.changeDirection();
 						directionChange = true;
+						AlienShip.setVerticalMovement(true);
 					}
 					entity.move();
 				}
@@ -283,38 +292,58 @@ AlarmListener{
 						& !directionChange){
 						AlienShip.changeDirection();
 						directionChange = true;
+						AlienShip.setVerticalMovement(true);
 					}
 					entity.move();
 				}
 			}
 			
 			// moves all missiles
-			for (int i = 0; i < missiles.size(); i++ ){
-				Entity missile = (Entity) missiles.get(i);
+			for (int i = 0; i < defenderMissiles.size(); i++ ){
+				Entity missile = (Entity) defenderMissiles.get(i);
 				missile.move();
 			}
 			
 			// moves all entities that haven't been destroyed
-			for (int i = 0; i < missiles.size(); i++ ){
-				Entity missile = (Entity) missiles.get(i);
+			for (int i = 0; i < defenderMissiles.size(); i++ ){
+				Entity missile = (Entity) defenderMissiles.get(i);
 				for(int j = 0 ; j < entities.size(); j++){
 					Entity ship = (Entity) entities.get(j);
 					if(ship.isInside(missile)){
 						entitiesToBeDestroyed.add(ship);
-						missilesToBeDestroyed.add(missile);
+						defenderMissilesToBeDestroyed.add(missile);
 						gameScore = gameScore + 100;
+						alienShipCount--;
+						if(alienShipCount < 1){
+							winCondition = true;
+							gameOver();
+						}
 					}
 				} 
 			}
 			
 			//removes entities to be destroyed and clears entitiesToBeDestroyed 
 			entities.removeAll(entitiesToBeDestroyed);
-			missiles.removeAll(missilesToBeDestroyed);
+			defenderMissiles.removeAll(defenderMissilesToBeDestroyed);
 			entitiesToBeDestroyed.clear();
-			missilesToBeDestroyed.clear();
+			defenderMissilesToBeDestroyed.clear();
+			
+			if(alienShipCount <= 50 && alienShipCount > 40){
+				AlienShip.setSpeedMultiplier(2);
+			}else if(alienShipCount <= 30 && alienShipCount > 20){
+				AlienShip.setSpeedMultiplier(3);
+			}else if(alienShipCount <= 20 && alienShipCount > 10){
+				AlienShip.setSpeedMultiplier(4);
+			}else if(alienShipCount <= 10 && alienShipCount > 5){
+				AlienShip.setSpeedMultiplier(6);
+			}else if (alienShipCount <= 5){
+				AlienShip.setSpeedMultiplier(8);
+			}
+			
+			
 		}
 		//stop the animation
-		else if(nextTime){
+		else if(!isGameRunning){
 			//These reset it to show the initial screen
 			nextTime = false;
 			isGameRunning = false;
@@ -329,12 +358,17 @@ AlarmListener{
 	private void startNewGame(){
 		
 		entities.clear();
-		missiles.clear();
+		defenderMissiles.clear();
+		alienMissiles.clear();
 		alienShipCount = 0;
 		gameScore = 0;
 		
+		winCondition = false;
+		
+		AlienShip.setSpeedMultiplier(1);
+		
 		//Our heroic defending ship
-		defender = new Ship((windowWidth - 50)/2, 725, 50, 25);
+		defender = new Ship((windowWidth - 50)/2, 850, 50, 25);
 		entities.add(defender);
 		
 		/*
@@ -352,11 +386,10 @@ AlarmListener{
 		int alienWidth = 25,
 			alienHeight = 25;
 		
-		//alienShips = new AlienShip[rowsOfShips][columnsOfShips];
-		for(int i = 0; i < rowsOfShips; i++){
-			for(int j = 0; j < columnsOfShips; j++){
-				Entity alienShip = new AlienShip(initialX + spacingX*j, 
-								initialY + spacingY*i , alienWidth, alienHeight);
+		for(int i = 0; i < columnsOfShips; i++){
+			for(int j = 0; j < rowsOfShips; j++){
+				Entity alienShip = new AlienShip(initialX + spacingX*i, 
+								initialY + spacingY*j , alienWidth, alienHeight);
 				entities.add(alienShip);
 				alienShipCount++;
 			}
@@ -431,7 +464,7 @@ AlarmListener{
 		if(pressed == key.VK_SPACE){
 			Entity missile = defender.fire();
 			if(missile != null){
-				missiles.add(missile);
+				defenderMissiles.add(missile);
 			}
 		}else if ((pressed == key.VK_LEFT) |(pressed == key.VK_A)){
 			int speed = defender.getSpeed();
@@ -445,6 +478,18 @@ AlarmListener{
 			if(ship.x + ship.width + speed < windowWidth ){
 				defender.moveRight();
 			}
+		}
+	}
+	
+	/**
+	 * Game Over
+	 */
+	private void gameOver(){
+		isGameRunning = false;
+		System.out.println("Game Over");
+		repaint();
+		if(winCondition){
+			System.out.println("You Win!");
 		}
 	}
 	

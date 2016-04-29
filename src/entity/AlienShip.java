@@ -15,7 +15,13 @@ public class AlienShip extends Ship {
 	 * Multiply's the speed of the <code>AlienShip</code>s as more are destroyed
 	 */
 	private static int speedMultiplier = 1,
-					   speed = 5;
+					   velocityX = 1,
+					   velocityY = 5;
+	
+	/**
+	 * Is alien moving down?
+	 */
+	private static boolean verticalMovement = false;
 	
 	/**
 	 * Default constructor for a <code>AlienShip</code>
@@ -36,10 +42,10 @@ public class AlienShip extends Ship {
 	}
 	
 	/**
-	 * Increases speed of all <code>AlienShip</code>s.
+	 * Sets speed of all <code>AlienShip</code>s.
 	 */
-	public static void increaseSpeed() {
-		// TODO Auto-generated method stub
+	public static void setSpeedMultiplier(int speedMultiplier) {
+		AlienShip.speedMultiplier = speedMultiplier;
 	}
 	
 	/**
@@ -47,14 +53,21 @@ public class AlienShip extends Ship {
 	 */
 
 	public static int getSpeed() {
-		return speed;
+		return velocityX*speedMultiplier;
 	}
 	
 	/**
 	 * Change Direction of all Alien Ships
 	 */
 	public static void changeDirection() {
-		speed = -speed;
+		velocityX = - velocityX;
+	}
+	
+	/**
+	 * Change Direction of all Alien Ships
+	 */
+	public static void setVerticalMovement(boolean verticalMovement) {
+		AlienShip.verticalMovement = verticalMovement;
 	}
 	
 	/**
@@ -79,17 +92,11 @@ public class AlienShip extends Ship {
 	 */
 	@Override
 	public void move(){
-		x =  x + speed*speedMultiplier;
+		x =  x + velocityX*speedMultiplier;
+		if(verticalMovement){
+			y = y + velocityY*speedMultiplier;
+		}
 		setShape();
-	}
-	
-	/**
-	 * Moves the <code>AlienShip</code> along its trajectory
-	 */
-	public void moveDown(){
-		int rowHeight = 1;
-		y = y + rowHeight;
-		move();
 	}
 	
 	/**
