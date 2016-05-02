@@ -6,9 +6,9 @@ import java.awt.Shape;
 
 /**
  *  The <code>Entity</code> class is used to create objects with different
- *  shapes that can move, detect collisions with other objects, and be destroyed.
+ *  shapes that can move, detect collisions with other objects.
  *  
- *  @Author Michael Twardowski
+ *  @author Michael Twardowski
  */
 public abstract class Entity{
 	
@@ -26,11 +26,6 @@ public abstract class Entity{
 	 * Its the fill color of <code>Entity</code>.
 	 */
 	protected Color color;
-	
-	/**
-	 * Is the <code>Entity</code> alive
-	 */
-	protected boolean alive;
 	
 	/**
 	 * Number of lives an <code>Entity</code>.
@@ -52,7 +47,6 @@ public abstract class Entity{
 	 */
 	public Entity(){
 		super();
-		alive = true;
 		lives = 1;
 	}
 	
@@ -68,17 +62,10 @@ public abstract class Entity{
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		alive = true;
 		lives = 1;
 		setShape();
 	}
 	
-	/**
-	 * Checks to see if the <code>Entity</code> is alive.
-	 */
-	public boolean isAlive(){
-		return alive;
-	}
 	
 	/**
 	 * Sets all of the properties of <code>Entity</code>.
@@ -92,7 +79,6 @@ public abstract class Entity{
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		alive = true;
 		lives = 1;
 		setShape();
 	}
@@ -106,10 +92,9 @@ public abstract class Entity{
 	}
 	
 	/**
-	 * True if the point whose x and y are given is within the button
-	 * @param x point to check
-	 * @param y point to check
-	 * @return
+	 * True if the point whose x and y are given is within the entity
+	 * @param entity to be checked
+	 * @return boolean true if the given entity is inside this one
 	 */
 	public boolean isInside(Entity entity){
 		return shape.contains(entity.x, entity.y);
@@ -117,11 +102,11 @@ public abstract class Entity{
 	
 	/**
 	 * Returns the <code>Entity</code>'s shape
+	 * @return shape of the Entity
 	 */
 	public Shape getShape(){
 		return shape;
 	}
-	
 	
 	/**
 	 * The entity fires an object
@@ -139,12 +124,8 @@ public abstract class Entity{
 	public abstract void move();
 	
 	/**
-	 * Destroys the <code>Entity</code>.
-	 */
-	public abstract void destroy();
-	
-	/**
 	 * Draws an <code>Entity</code>.
+	 * @param pane a graphics object
 	 */
 	public abstract void paint(Graphics pane);
 }

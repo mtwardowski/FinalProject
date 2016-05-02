@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -8,6 +9,8 @@ import java.awt.Rectangle;
 *  can increase in speed detect collisions with other objects, fire <code>Missile</code>'s to destroy
 *  <code>Ship</code>'s, and be destroyed by <code>Missile</code>s fired by
 *  <code>Ship</code>s.
+*  
+*   @author Michael Twardowski
 */ 
 public class AlienShip extends Ship {
 	
@@ -27,7 +30,6 @@ public class AlienShip extends Ship {
 	 * Default constructor for a <code>AlienShip</code>
 	 */
 	public AlienShip() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**
@@ -39,6 +41,7 @@ public class AlienShip extends Ship {
 	 */
 	public AlienShip(int x, int y, int width, int height) {
 		super(x, y, width, height);
+		setColor(Color.GREEN);
 	}
 	
 	/**
@@ -49,43 +52,37 @@ public class AlienShip extends Ship {
 	}
 	
 	/**
-	 * Returns the speed of all Alien Ships
+	 * Returns the speed of all <code>AlienShip</code>s.
 	 */
-
 	public static int getSpeed() {
 		return velocityX*speedMultiplier;
 	}
 	
 	/**
-	 * Change Direction of all Alien Ships
+	 * Change Direction of all <code>AlienShip</code>s.
 	 */
 	public static void changeDirection() {
 		velocityX = - velocityX;
 	}
 	
 	/**
-	 * Change Direction of all Alien Ships
+	 * Enables or Disables vertical movement of all <code>AlienShip</code>s.
+	 * @param verticalMovement true if there is movement in the Y dimenion
 	 */
 	public static void setVerticalMovement(boolean verticalMovement) {
 		AlienShip.verticalMovement = verticalMovement;
 	}
 	
 	/**
-	 * Fires a <code>Missile</code> from the <code>AlienShip</code> in the
+	 * Fires a <code>Missile</code> from a <code>AlienShip</code> in the
 	 * downward direction
 	 */
 	@Override
 	public Missile fire() {
-		int speed = 15; 
+		int speed = 10; 
 		Missile missile = new Missile(x + width/2, y, speed);
+		missile.setColor(Color.GREEN);
 		return missile;
-	}
-
-	/**
-	 * Destroys the <code>AlienShip</code>.
-	 */
-	public void destroy(){
-		
 	}
 
 	/**
@@ -105,7 +102,7 @@ public class AlienShip extends Ship {
 	 */
 	@Override
 	public void paint(Graphics pane) {
-		pane.setColor(color.black);
+		pane.setColor(color);
 		pane.fillRect(x, y, width, height);
 	}
 	
@@ -116,5 +113,4 @@ public class AlienShip extends Ship {
 	public void setShape() {
 		shape = new Rectangle(x, y, width, height);
 	}
-	
 }

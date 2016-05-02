@@ -5,6 +5,8 @@ import java.awt.*;
 /**
  *  The <code>AButton</code> abstract class can be used to create interactive 
  *  buttons of any shape.
+ *  
+ *  @author Michael Twardowski
  */
 public abstract class AButton {
 	
@@ -126,5 +128,4 @@ public abstract class AButton {
 						x + (width - labelWidth)/2,
 						y + (height + labelHeight)/2);
 	}
-
 }

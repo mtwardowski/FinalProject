@@ -11,15 +11,9 @@ import java.awt.Rectangle;
  *  A <code>Missile</code> will also destruct if it collides with a game window
  *  border.
  *  
- *  @Author Michael Twardowski
+ *  @author Michael Twardowski
  */
 public class Missile extends Entity {
-	
-	/**
-	 * Tells the direction in which the missile is fired.
-	 * If true, the missile is fired up.
-	 */
-	private boolean isMissileRising;
 	
 	/**
 	 * Missile Dimensions
@@ -36,16 +30,13 @@ public class Missile extends Entity {
 	 * Default Constructor for <code>Missile</code>.
 	 */
 	public Missile() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**
 	 * Sets all of the properties of <code>Missile</code>.
 	 * @param x the x location
 	 * @param y the y location
-	 * @param width of the <code>Missile</code>
-	 * @param height of the <code>Missile</code>
-	 * @param isUp the direction of the missile. (Up if true)
+	 * @param speed of the missile, a negative speed would fly up.
 	 */
 	public Missile(int x, int y, int speed) {
 		super(x, y, 5, 15);
@@ -63,17 +54,10 @@ public class Missile extends Entity {
 	}
 
 	/**
-	 * Moves the <code>Missle</code> along its trajectory until a collision occurs.
+	 * Moves the <code>Missile</code> along its trajectory.
 	 */
 	public void move(){
 		y = y + speed;
-	}
-	
-	/**
-	 * Destroys the entity
-	 */
-	public void destroy(){
-		
 	}
 	
 	/**
@@ -81,15 +65,15 @@ public class Missile extends Entity {
 	 */
 	@Override
 	public void paint(Graphics pane) {
-		pane.setColor(color.blue);
+		pane.setColor(color);
 		pane.fillRect(x, y, width, height);
 	}
 	
 	/**
 	 * Fire does nothing, returns null
 	 */
+	@Override
 	public Entity fire(){
 		return null;
 	}
-	
 }

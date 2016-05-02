@@ -7,7 +7,7 @@ import java.awt.event.WindowEvent;
 *	<p>
 *	The <code>windowClosing</code> method closes a window when its exit button is pressed. 
 *	
-*	@Author Michael Twardowski
+*	@author Michael Twardowski
 */
 public class CloseWindow extends WindowAdapter {
 	

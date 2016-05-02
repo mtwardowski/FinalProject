@@ -5,6 +5,8 @@ import java.awt.*;
 /**
  *  The <code>RegularButton</code> class can be used to create interactive buttons
  *  of a rectangular shape.
+ *  
+ *   @author Michael Twardowski
  */
 public class RegularButton extends AButton {
 	
