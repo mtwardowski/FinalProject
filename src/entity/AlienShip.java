@@ -76,8 +76,9 @@ public class AlienShip extends Ship {
 	 */
 	@Override
 	public Missile fire() {
-		// TODO Auto-generated method stub
-		return null;
+		int speed = 15; 
+		Missile missile = new Missile(x + width/2, y, speed);
+		return missile;
 	}
 
 	/**

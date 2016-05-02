@@ -65,19 +65,13 @@ AlarmListener{
 	private CloseWindow myWindow;
 	
 	/**
-	 * Array to keep track of everything that isn't destroyed
+	 * AlienShips
 	 */
-	private ArrayList<Entity> alienShips = new ArrayList<Entity>();
+	private Entity[][] alienShips;
+	private int[] alienShipIndex;
+	
 	private ArrayList<Entity> defenderMissiles = new ArrayList<Entity>();
 	private ArrayList<Entity> alienMissiles = new ArrayList<Entity>();
-	
-	/**
-	 * ArrayList to keep track of any <code>Entity</code> that is to be destroy
-	 * when the next frame is painted.
-	 */
-	private ArrayList<Entity> entitiesToBeDestroyed = new ArrayList<Entity>();
-	private ArrayList<Entity> defenderMissilesToBeDestroyed = new ArrayList<Entity>();
-	private ArrayList<Entity> alienMissilesToBeDestroyed = new ArrayList<Entity>();
 	
 	/**
 	 * <code>Ship</code> for the user to control
@@ -231,14 +225,22 @@ AlarmListener{
 		defender.paint(pane);
 		
 		// paints all alienShips that haven't been destroyed
-		for (int i = 0; i < alienShips.size(); i++ ){
-				Entity entity = (Entity) alienShips.get(i);
-				entity.paint(pane);
+		for(int i = 0; i < alienShips.length; i++){
+			for(int j = 0; j < alienShipIndex[i]; j++){
+				alienShips[i][j].paint(pane);
+			}
 		}
 		
-		// paints all missiles that haven't been destroyed
+		
+		// paints all defender missiles that haven't been destroyed
 		for (int i = 0; i < defenderMissiles.size(); i++ ){
 				Entity missile = (Entity) defenderMissiles.get(i);
+				missile.paint(pane);
+		}
+		
+		// paints all alien missiles that haven't been destroyed
+		for (int i = 0; i < alienMissiles.size(); i++ ){
+				Entity missile = (Entity) alienMissiles.get(i);
 				missile.paint(pane);
 		}
 		
@@ -271,41 +273,53 @@ AlarmListener{
 			
 			if(speed < 0){
 				// moves all alienShips to the right
-				for (int i = 0; i < alienShips.size(); i++ ){
-					
-					Entity entity = alienShips.get(i);
-					
-					// checks to see if the direction has already changed
-					if(!directionChange){
-						Rectangle rect = entity.getShape().getBounds();
-
-						//changes direction of ships and tells them to move down
-						if(rect.x + speed <= 0){
-							AlienShip.changeDirection();
-							directionChange = true;
-							AlienShip.setVerticalMovement(true);
+				for(int i = 0; i < alienShips.length; i++){
+					for(int j = 0; j < alienShipIndex[i]; j++){
+						
+						// checks to see if the direction has already changed
+						if(!directionChange){
+							Rectangle rect = alienShips[i][j].getShape().getBounds();
+	
+							//changes direction of ships and tells them to move down
+							if(rect.x + speed <= 0){
+								AlienShip.changeDirection();
+								directionChange = true;
+								AlienShip.setVerticalMovement(true);
+							}
+						}
+						alienShips[i][j].move();
+						
+						//fire random missile
+						if( Math.random() > 0.9998){
+							Entity missile = alienShips[i][j].fire();
+							alienMissiles.add(missile);
 						}
 					}
-					entity.move();
 				}
 			}else{
 				// moves all alienShips to the left
-				for (int i = alienShips.size() -1; i > -1; i-- ){
-
-					Entity entity = alienShips.get(i);
-					
-					// checks to see if the direction has already changed
-					if(!directionChange){
-						Rectangle rect = entity.getShape().getBounds();
+				for(int i = alienShips.length - 1; i > -1 ; i--){
+					for(int j = 0; j < alienShipIndex[i]; j++){
 						
-						//changes direction of ships and tells them to move down
-						if(rect.x + rect.width + speed> windowWidth){
-							AlienShip.changeDirection();
-							directionChange = true;
-							AlienShip.setVerticalMovement(true);
+						// checks to see if the direction has already changed
+						if(!directionChange){
+							Rectangle rect = alienShips[i][j].getShape().getBounds();
+	
+							//changes direction of ships and tells them to move down
+							if(rect.x + rect.width + speed >= windowWidth){
+								AlienShip.changeDirection();
+								directionChange = true;
+								AlienShip.setVerticalMovement(true);
+							}
+						}
+						alienShips[i][j].move();
+						
+						//fire random missile
+						if( Math.random() > 0.9998){
+							Entity missile = alienShips[i][j].fire();
+							alienMissiles.add(missile);
 						}
 					}
-					entity.move();
 				}
 			}
 			
@@ -315,35 +329,66 @@ AlarmListener{
 				missile.move();
 			}
 			
+			/*
+			 * ArrayList to keep track of any <code>Entity</code> that is to be destroy
+			 * when the next frame is painted.
+			 */
+			ArrayList<Entity> defenderMissilesToBeDestroyed = new ArrayList<Entity>(),
+							  alienMissilesToBeDestroyed = new ArrayList<Entity>();
+			
+			/*
+			 * Keeps track of the indexes for what alienShip needs to be destroyed
+			 */
+			boolean[][] alienShipsToBeDestroyed = new boolean[12][5];
+			int[] alienShipsToBeDestroyedCount = new int[12];
+			
 			// Checks for defenderMissiles position
 			for (int i = 0; i < defenderMissiles.size(); i++ ){
 				Entity missile = defenderMissiles.get(i);
 				int y = missile.getShape().getBounds().x;
 				
-				// If missile is out of the drawable area, destroy
+				// If missile is out of the draw able area, destroy
 				if( y < 0){
 					defenderMissilesToBeDestroyed.add(missile);
-				}else{ // checkfor collisions
-					for(int j = 0 ; j < alienShips.size(); j++){
-						Entity ship = alienShips.get(j);
-						if(ship.isInside(missile)){
-							entitiesToBeDestroyed.add(ship);
-							defenderMissilesToBeDestroyed.add(missile);
-							gameScore = gameScore + 100;
-							alienShipCount--;
-							if(alienShipCount < 1){
-								winCondition = true;
-								gameOver();
+				}else{ // check for collisions
+					for(int j = 0; j < alienShips.length; j++){
+						for(int k = 0; k < alienShipIndex[j]; k++){
+							if(alienShips[j][k].isInside(missile)){
+								alienShipsToBeDestroyed[j][k] = true;
+								alienShipsToBeDestroyedCount[j]++;
+								alienShipCount--;
+								if(alienShipCount < 1){
+									winCondition = true;
+									gameOver();
+								}
+								defenderMissilesToBeDestroyed.add(missile);
+								
+								// increment score
+								gameScore = gameScore + 100;
+							}
+						} 
+					}	
+				}
+			}
+			
+			
+			//removes alienShips to be destroyed an
+			for(int i = 0; i < alienShipsToBeDestroyedCount.length; i++){
+					if(alienShipsToBeDestroyedCount[i] > 0){
+						Entity[] tempShips = new AlienShip[alienShips[i].length];
+						int count = 0;
+						for(int j = 0; j < alienShipIndex[i]; j++){
+							if(!alienShipsToBeDestroyed[i][j]){
+								tempShips[count++] = alienShips[i][j];
 							}
 						}
-					} 
+						alienShips[i] = tempShips;
+						alienShipIndex[i] = count;
 				}
 			}
 			
 			//removes alienShips and missiles to be destroyed and clears objects that have been destroyed.
-			alienShips.removeAll(entitiesToBeDestroyed);
 			defenderMissiles.removeAll(defenderMissilesToBeDestroyed);
-			entitiesToBeDestroyed.clear();
 			defenderMissilesToBeDestroyed.clear();
 			
 			if(alienShipCount <= 50 && alienShipCount > 40){
@@ -370,15 +415,41 @@ AlarmListener{
 		}
 	}
 	
+	//
+	public boolean containsInt(int[] array, int target, int max) {
+      for (int i = 0; i < max; i++) {
+         if (target == array[i]) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+	
 	/**
 	 * Starts a new game 
 	 */
 	private void startNewGame(){
 		
-		alienShips.clear();
+		/*
+		 * Adds Alien Ships
+		 */
+		
+		int rowsOfShips = 5,
+			columnsOfShips = 12,
+			alienWidth = 40,
+			alienHeight = 40,
+			initialX = windowWidth/columnsOfShips,
+			initialY = 150,
+			spacingX = 50,
+			spacingY = 20;
+		
+		alienShips = new AlienShip[columnsOfShips][rowsOfShips];
+		alienShipIndex = new int[columnsOfShips];
+		alienShipCount = 0;
+		
 		defenderMissiles.clear();
 		alienMissiles.clear();
-		alienShipCount = 0;
 		gameScore = 0;
 		
 		winCondition = false;
@@ -388,26 +459,11 @@ AlarmListener{
 		//Our heroic defending ship
 		defender = new Ship((windowWidth - 50)/2, 850, 50, 25);
 		
-		/*
-		 * Adds Alien Ships
-		 */
-		
-		int rowsOfShips = 5,
-			columnsOfShips = 12,
-			initialX = windowWidth/columnsOfShips,
-			initialY = 150,
-			spacingX = 100,
-			spacingY = spacingX/2;
-		
-		//TODO: remove later
-		int alienWidth = 25,
-			alienHeight = 25;
-		
-		for(int i = 0; i < columnsOfShips; i++){
-			for(int j = 0; j < rowsOfShips; j++){
-				Entity alienShip = new AlienShip(initialX + spacingX*i, 
-								initialY + spacingY*j , alienWidth, alienHeight);
-				alienShips.add(alienShip);
+		for(int i = 0; i < alienShips.length; i++){
+			for(int j = 0; j < alienShips[0].length; j++){
+				alienShips[i][j] = new AlienShip(initialX + alienWidth*i + spacingX*i, 
+								initialY + alienWidth*j + spacingY*j , alienWidth, alienHeight);
+				alienShipIndex[i]++;
 				alienShipCount++;
 			}
 		}
